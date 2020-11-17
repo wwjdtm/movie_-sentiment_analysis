@@ -8,6 +8,7 @@ import os
 from pprint import pprint
 import time
 from bs4 import BeautifulSoup
+import numpy as np
 
 
 base_url = 'https://movie.naver.com/movie/bi/mi/point.nhn?code=38899'
@@ -19,7 +20,7 @@ browser.switch_to.frame(browser.find_element_by_id('pointAfterListIframe'))
 
 naver_movie = DataFrame({'star_score':[], 'review':[]})
 
-for page in range(0,3):
+for page in range(0,2):
     time.sleep(1)
     html0 = browser.page_source
     html1 = BeautifulSoup(html0,'html.parser')
@@ -28,13 +29,12 @@ for page in range(0,3):
 
     for i in range(len(review0)):
         star_score = review0[i].find('div', {'class': 'star_score'}).find('em').text  # 별점
-        review = review0[i].find('div', {'class': 'score_reple'}).find('p').text.replace("\n","").replace("\t","")  # 댓글
+        review = review0[i].find('div', {'class': 'score_reple'}).find('p').text.replace('\n','').replace('\t','')  # 댓글
 
         insert_data = DataFrame({'star_score': [star_score],
                                     'review': [review]})
         naver_movie = naver_movie.append(insert_data)
 
-        # 다음페이지로 넘어가기
     if page == 0:
         browser.find_elements_by_xpath('//*[@class = "paging"]/div/a')[10].click()
     else:
@@ -43,10 +43,15 @@ for page in range(0,3):
 naver_movie.index = range(len(naver_movie))
 print(type(naver_movie))
 print(naver_movie)
-naver_movie['star_score'] = naver_movie['star_score'].astype('float32')
-star_score_ls = naver_movie['star_score'].tolist()
+# naver_movie['star_score'] = naver_movie['star_score'].astype('float32')
+# star_score_ls = naver_movie['star_score'].tolist()
 
-print(star_score_ls)
+# f = open('naver_movie.txt', 'a')
+# f.writelines([str(naver_movie['star_score']), ' ', str(naver_movie['review'])])
+# f.close()
+np.savetxt(r'./naver_movie.txt', naver_movie.values, fmt='%s')
+print(type(naver_movie))
+
 
 
 
