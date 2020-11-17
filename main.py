@@ -28,7 +28,7 @@ for page in range(0,3):
 
     for i in range(len(review0)):
         star_score = review0[i].find('div', {'class': 'star_score'}).find('em').text  # 별점
-        review = review0[i].find('div', {'class': 'score_reple'}).find('p').text  # 댓글
+        review = review0[i].find('div', {'class': 'score_reple'}).find('p').text.replace("\n","").replace("\t","")  # 댓글
 
         insert_data = DataFrame({'star_score': [star_score],
                                     'review': [review]})
@@ -42,6 +42,7 @@ for page in range(0,3):
 
 naver_movie.index = range(len(naver_movie))
 print(type(naver_movie))
+print(naver_movie)
 naver_movie['star_score'] = naver_movie['star_score'].astype('float32')
 star_score_ls = naver_movie['star_score'].tolist()
 
