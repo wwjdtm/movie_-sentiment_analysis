@@ -78,3 +78,10 @@ for sentence in text_test:
     test_pos.append(temp_X)
 
 
+##########
+from keras.preprocessing.text import Tokenizer
+max_words = 35000
+tokenizer = Tokenizer(num_words = max_words)
+tokenizer.fit_on_texts(test_pos)
+X_train = tokenizer.texts_to_sequences(train_pos)
+X_test = tokenizer.texts_to_sequences(test_pos)
