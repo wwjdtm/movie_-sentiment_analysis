@@ -85,3 +85,32 @@ tokenizer = Tokenizer(num_words = max_words)
 tokenizer.fit_on_texts(test_pos)
 X_train = tokenizer.texts_to_sequences(train_pos)
 X_test = tokenizer.texts_to_sequences(test_pos)
+
+
+##########
+import numpy as np
+#score_train
+#score_test
+#2 긍정
+#1 보통
+#0 부정
+y_train = []
+y_test = []
+for i in range(len(score_train)):
+  if score_train[i] == "2":
+    y_train.append([0, 0, 1])
+  elif score_train[i] == "1":
+    y_train.append([0, 1, 0])
+  elif score_train[i] == "0":
+    y_train.append([1, 0, 0])
+for i in range(len(score_test)):
+  if score_test[i] == "2":
+    y_test.append([0, 0, 1])
+  elif score_test[i] == "1":
+    y_test.append([0, 1, 0])
+  elif score_test[i] == "0":
+    y_test.append([1, 0, 0])
+
+y_train = np.array(y_train)
+y_test = np.array(y_test)
+
