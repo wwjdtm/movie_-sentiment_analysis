@@ -114,3 +114,22 @@ for i in range(len(score_test)):
 y_train = np.array(y_train)
 y_test = np.array(y_test)
 
+###################
+
+from keras.layers import Embedding, Dense, LSTM , GRU
+from keras.models import Sequential
+from keras.preprocessing.sequence import pad_sequences
+max_len = 20 # 전체 데이터의 길이를 20로 맞춘다
+
+X_train = pad_sequences(X_train, maxlen=max_len)
+X_test = pad_sequences(X_test, maxlen=max_len)
+
+
+model = Sequential()
+model.add(Embedding(max_words, 100))
+model.add(LSTM(128)) #or gru
+model.add(Dense(3, activation='softmax'))
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy']) #or adam
+history = model.fit(X_train, y_train, epochs=10, batch_size=10, validation_split=0.1)
+print("\n 테스트 정확도 : {:.2f}%" .format(model.evaluate(X_test, y_test)[1]*100))
+
