@@ -133,3 +133,45 @@ model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['ac
 history = model.fit(X_train, y_train, epochs=10, batch_size=10, validation_split=0.1)
 print("\n 테스트 정확도 : {:.2f}%" .format(model.evaluate(X_test, y_test)[1]*100))
 
+###############
+predict = model.predict(X_test)
+import numpy as np
+predict_labels = np.argmax(predict, axis = 1)
+original_labels = np.argmax(y_test, axis = 1)
+for i in range(len(test_pos)):
+  print(text_test[i], "/////원래라벨: ",score_test[i],"예측한라벨: ",predict_labels[i] )
+
+stopwords = ['의', '가', '이', '은', '들', '는', '좀', '잘', '걍', '과', '도', '를', '으로', '자', '에', '와', '한', '하다']
+
+
+def tokenizing(data):
+    pos = []
+    temp_X = []
+    temp_X = okt.morphs(data, stem=True)  # 토큰화
+    temp_X = [word for word in temp_X if not word in stopwords]  # 불용어 제거
+    pos.append(temp_X)
+    return pos
+
+
+def predict_pos_text(text):
+    pos = tokenizing(text)  # okt.pos로 토큰화한 단어를 정리
+    # print(pos)
+    max_words = 35000
+    tokenizer = Tokenizer(num_words=max_words)
+    tokenizer.fit_on_texts(test_pos)
+    data = tokenizer.texts_to_sequences(pos)
+    # print(data)
+    predict_score = model.predict(data)
+    print(predict_score)
+    # print(max(predict_score[0]))
+    a = max(predict_score[0])
+
+    if (a == predict_score[0][0]):
+        print("[{}]는 {:.2f}% 확률로 부정 리뷰입니다.\n".format(text, a * 100))
+    elif (a == predict_score[0][1]):
+        print("[{}]는 {:.2f}% 확률로 보통 리뷰입니다.\n".format(text, a * 100))
+    else:
+        print("[{}]는 {:.2f}% 확률로 긍정 리뷰입니다.\n".format(text, a * 100))
+
+
+predict_pos_text("보통입니다")
